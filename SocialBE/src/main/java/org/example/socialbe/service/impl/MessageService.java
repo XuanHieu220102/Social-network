@@ -50,9 +50,11 @@ public class MessageService implements IMessageService {
             } else { // PRIVATE
                 // Lấy friendId từ participant khác
                 String friendId = getFriendIdFromConversation(conv.getId(), userId);
-                UserEntity friend = userRepository.findById(friendId).orElse(null);
-                dto.setDisplayName(friend != null ? friend.getFullName() : "Unknown");
-                dto.setFriendId(friendId);
+                if (friendId != null) {
+                    UserEntity friend = userRepository.findById(friendId).orElse(null);
+                    dto.setDisplayName(friend != null ? friend.getFullName() : "Unknown");
+                    dto.setFriendId(friendId);
+                }
             }
 
             // Lấy thời gian tin nhắn cuối (giả sử bạn có cách lấy từ MessageEntity)
@@ -68,6 +70,7 @@ public class MessageService implements IMessageService {
                 ChatListDTO dto = new ChatListDTO();
                 dto.setDisplayName(friendUser.getFullName());
                 dto.setFriendId(friend.getFriendId());
+                dto.setAvatarUrl(friendUser.getAvatarUrl());
                 dto.setLastMessageTime(null); // Không có tin nhắn
                 chatList.add(dto);
             }

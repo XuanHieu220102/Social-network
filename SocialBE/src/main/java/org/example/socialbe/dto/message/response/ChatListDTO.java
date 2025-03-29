@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class ChatListDTO {
     private String conversationId;
     private String displayName;
+    private String avatarUrl;
     private String type;
     private LocalDateTime lastMessageTime;
     private String friendId;
