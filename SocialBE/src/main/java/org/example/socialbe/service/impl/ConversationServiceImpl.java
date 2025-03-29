@@ -3,12 +3,17 @@ package org.example.socialbe.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.socialbe.dto.ErrorResponse;
 import org.example.socialbe.dto.conversation.request.ConversationRequest;
+import org.example.socialbe.dto.conversation.response.ConversationResponse;
+import org.example.socialbe.dto.conversation.response.ConversationWithLastMessage;
+import org.example.socialbe.entity.UserEntity;
 import org.example.socialbe.repository.ConversationParticipantRepository;
 import org.example.socialbe.repository.ConversationRepository;
 import org.example.socialbe.service.IConversationService;
 import org.example.socialbe.util.IdGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +24,8 @@ public class ConversationServiceImpl implements IConversationService {
     @Override
     public ErrorResponse createConversation(ConversationRequest request) {
         try {
-            if (!conversationRepository.isConversationExist(request.getSenderId(), request.getReceiverId())
-            || !conversationRepository.isConversationExist(request.getReceiverId(), request.getSenderId())) {
+            if (Boolean.TRUE.equals(!conversationRepository.isConversationExist(request.getSenderId(), request.getReceiverId()))
+            || Boolean.TRUE.equals(!conversationRepository.isConversationExist(request.getReceiverId(), request.getSenderId()))) {
                 String conversationId = IdGenerator.generateId();
                 conversationRepository.createConversation(conversationId, request.getType(), request.getName());
                 conversationParticipantRepository.insertConversationParticipants(IdGenerator.generateId(), conversationId, request.getSenderId());
@@ -32,4 +37,5 @@ public class ConversationServiceImpl implements IConversationService {
             return new ErrorResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), ex.getMessage());
         }
     }
+
 }

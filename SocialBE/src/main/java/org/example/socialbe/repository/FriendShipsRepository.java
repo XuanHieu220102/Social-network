@@ -49,4 +49,13 @@ public interface FriendShipsRepository extends JpaRepository<FriendShipEntity, S
             "WHERE f.userId = :currentUserId AND f.status = 3")
     List<UserEntity> findBlockedUsers(@Param("currentUserId") String currentUserId);
 
+    @Query("SELECT f FROM FriendShipEntity f " +
+            "WHERE f.userId = :userId AND f.status = 2 " + // Giả sử status = 1 là bạn bè
+            "AND NOT EXISTS (SELECT cp FROM ConversationParticipantEntity cp " +
+            "JOIN ConversationEntity c ON cp.conversationId = c.id " +
+            "WHERE cp.userId = f.friendId AND c.type = 'PRIVATE' " +
+            "AND EXISTS (SELECT cp2 FROM ConversationParticipantEntity cp2 " +
+            "WHERE cp2.conversationId = c.id AND cp2.userId = :userId))")
+    List<FriendShipEntity> findFriendsWithoutConversation(String userId);
+
 }
